@@ -1,0 +1,93 @@
+MODEL:
+  META_ARCHITECTURE: Baseline
+
+  BACKBONE:
+    NAME: build_meta_dynamic_router_resnet_backbone
+    NORM: BN
+    DEPTH: 50x
+    LAST_STRIDE: 1
+    FEAT_DIM: 2048
+    WITH_IBN: True
+    PRETRAIN: True
+
+  HEADS:
+    NAME: MetaEmbeddingHead
+    NORM: BN
+    WITH_BNNECK: True
+    POOL_LAYER: GeneralizedMeanPooling
+    NECK_FEAT: after
+    CLS_LAYER: Linear
+
+  LOSSES:
+    NAME: ("CrossEntropyLoss", "TripletLoss")
+
+    CE:
+      EPSILON: 0.1
+      SCALE: 1.
+
+    TRI:
+      MARGIN: 0.3
+      HARD_MINING: True
+      NORM_FEAT: False
+      SCALE: 1.
+    
+    CIRCLE:
+      MARGIN: 0.25
+      GAMMA: 32
+      SCALE: 0.1
+
+INPUT:
+  SIZE_TRAIN: [ 256, 128 ]
+  SIZE_TEST: [ 256, 128 ]
+
+  AUTOAUG:
+    ENABLED: True
+    PROB: 0.1
+
+  # REA:
+  #   ENABLED: True
+  #   PROB: 0.5
+
+  FLIP:
+    ENABLED: True
+
+  PADDING:
+    ENABLED: True
+
+DATALOADER:
+  SAMPLER_TRAIN: NaiveIdentitySampler
+  NUM_INSTANCE: 2
+  NUM_WORKERS: 8
+
+SOLVER:
+  AMP:
+    ENABLED: False
+  OPT: SGD
+  MAX_EPOCH: 60
+  BASE_LR: 0.04
+  ETA_MIN_LR: 0.00004
+  WEIGHT_DECAY: 0.0005
+  WEIGHT_DECAY_NORM: 0.0005
+  IMS_PER_BATCH: 64
+
+  SCHED: CosineAnnealingLR
+  STEPS: [ 30, 50 ]
+  WARMUP_FACTOR: 0.01
+  WARMUP_ITERS: 10
+  WARMUP_METHOD: linear
+
+  CHECKPOINT_PERIOD: 5
+
+TEST:
+  EVAL_PERIOD: 5
+  IMS_PER_BATCH: 128
+
+CUDNN_BENCHMARK: True
+
+
+DATASETS:
+  NAMES: ("cuhkSYSU", "Market1501", "MSMT17")
+  TESTS: ("CUHK03",)
+  # COMBINEALL: True
+
+OUTPUT_DIR: logs/
