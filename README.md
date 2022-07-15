@@ -4,6 +4,7 @@
 ## Requirements
 + CUDA>=10.0
 + At least four 1080-Ti GPUs
++ Setup could refer to [INSTALL.md](INSTALL.md)
 + Other necessary packages listed in [requirements.txt](requirements.txt)
 + Training Data \
 The model is trained and evaluated on Market-1501, MSMT17, cuhkSYSU, CUHK03. Download for these datasets, please refer to [fast-reid](https://github.com/JDAI-CV/fast-reid).
