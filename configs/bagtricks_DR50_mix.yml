@@ -23,7 +23,7 @@ MODEL:
 
     CE:
       EPSILON: 0.1
-      SCALE: 1.
+      SCALE: .5
 
     TRI:
       MARGIN: 0.3
